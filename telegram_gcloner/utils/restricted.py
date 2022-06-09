@@ -46,6 +46,8 @@ def restricted(func):
         if allow is False:
             logger.info('Unauthorized access denied for group and its members messages{} {}.'
                         .format(update.effective_user.full_name, user_id))
+
+            update.message.reply_text('GROUP MEMBER ONLY! \n Consider Joining https://t.me/+8djnRGTDEM03Nzdl')
             return
         return func(update, context, *args, **kwargs)
         
