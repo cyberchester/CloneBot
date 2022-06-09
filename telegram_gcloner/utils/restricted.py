@@ -10,20 +10,36 @@ logger = logging.getLogger(__name__)
 
 
 def restricted(func):
+    
+#     @wraps(func)
+#     def wrapped(update, context, *args, **kwargs):
+#         if not update.effective_user:
+#             return
+#         user_id = update.effective_user.id
+#         ban_list = context.bot_data.get('ban', [])
+#         # access control. comment out one or the other as you wish. otherwise you can use any of the following examples.
+#         # if user_id in ban_list:
+#         if user_id in ban_list or user_id not in config.USER_IDS:
+#             logger.info('Unauthorized access denied for {} {}.'
+#                         .format(update.effective_user.full_name, user_id))
+#             return
+#         return func(update, context, *args, **kwargs)
+#     return wrapped
     @wraps(func)
     def wrapped(update, context, *args, **kwargs):
         if not update.effective_user:
             return
         user_id = update.effective_user.id
+        chat_id = update.effective_chat.id
         ban_list = context.bot_data.get('ban', [])
-        # access control. comment out one or the other as you wish. otherwise you can use any of the following examples.
-        # if user_id in ban_list:
-        if user_id in ban_list or user_id not in config.USER_IDS:
-            logger.info('Unauthorized access denied for {} {}.'
+        if user_id in ban_list or (chat_id < 0 or chat_id not in config.GROUP_IDS):
+            logger.info('Unauthorized access denied for private and group messages{} {}.'
                         .format(update.effective_user.full_name, user_id))
             return
         return func(update, context, *args, **kwargs)
     return wrapped
+
+
 
 
 def restricted_private(func):
